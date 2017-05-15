@@ -1,25 +1,25 @@
-library(readr)
+library(tidyverse)
 library(stringr)
-library(dplyr)
+library(ggplot2)
 
 setwd("~/GitHub/SoSE")
 rm(list=ls())
 
 #### Enrolments ####
-enrol=read_csv("./Data/04770019-eng.csv", na='..')
-# StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770019 
-enrol=mutate(enrol, Ref_Date = as.numeric(str_extract( enrol[['Ref_Date']], "^[:digit:]+")) )
-# glimpse(enrol)
+# enrol=read_csv("./Data/04770019-eng.csv", na='..')
+# # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770019 
+# enrol=mutate(enrol, Ref_Date = as.numeric(str_extract( enrol[['Ref_Date']], "^[:digit:]+")) )
+# # glimpse(enrol)
 
 #### Graduates ####
-grad=read_csv("./Data/04770020-eng.csv", na='..')
-# StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770020
-# glimpse(grad)
+# grad=read_csv("./Data/04770020-eng.csv", na='..')
+# # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770020
+# # glimpse(grad)
 
 #### UofT ####
 #Data from http://cudo.utoronto.ca/
 #Tri-campus data collected by data 
-cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
+# cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
 
 #### Programs ####
 lop = read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = TRUE, delim=',')
@@ -31,4 +31,10 @@ for(i in 1:3){
   progs[[i]]= mutate(progs[[i]], Univ=lop$ShortName[i])
 }
 aprogs=do.call(bind_rows,progs[1:3]) # all programs
+aprogs=mutate(aprogs, Category= str_replace(Category," ",""))
+aprogs=mutate(aprogs, Category = str_split(Category, ",") )
+aprogs=mutate(aprogs, Discipline= str_replace(Discipline," ",""))
+aprogs=mutate(aprogs, Discipline = str_split(Discipline, ",") )
+aprogs=mutate(aprogs, Level = str_replace(Level," ",""))
+aprogs=mutate(aprogs, Level = str_split(Level,""))
 
