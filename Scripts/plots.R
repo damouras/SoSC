@@ -1,3 +1,12 @@
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(reshape2)
+
+##### Enrollment & Graduates ####
+enrol %>% filter( Coordinate=="1.2.1.13.9.1.1") %>% select(Ref_Date, Value) %>% ggplot( aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1) 
+grad %>% filter( Coordinate=="1.2.13.9.1.1") %>% select(Ref_Date, Value) %>% ggplot( aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1)
+cudo_UT %>% filter( FoS=="CS") %>% select(Year, Enroll) %>% ggplot( aes(Year,Enroll)) + geom_point(size=3) + geom_line(lwd=1)
 
 ggplot( filter(enrol, Coordinate=="1.2.1.13.9.1.1"), aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1) 
 ggplot(filter(grad, Coordinate=="1.2.13.9.1.1"),aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1)
@@ -10,3 +19,7 @@ ggplot( filter(enrol, Coordinate=="1.2.1.13.9.1.1"), aes(Ref_Date,Value)) + geom
 cudo_UT %>% ggplot() + geom_line(aes(x=Year, y=Enroll, group = FoS, colour=FoS)) + 
   geom_line(data=cudo_UT, aes(x=Year, y=Grad, group = FoS, colour=FoS))
 
+##### Programs ####
+
+
+aprogs %>% group_by(Univ) %>% filter(Type !="FE") %>% summarise(sum(Credits))

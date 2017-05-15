@@ -1,33 +1,34 @@
 library(readr)
-library(dplyr)
 library(stringr)
-library(ggplot2)
-library(reshape2)
+library(dplyr)
 
 setwd("~/GitHub/SoSE")
+rm(list=ls())
 
 #### Enrolments ####
 enrol=read_csv("./Data/04770019-eng.csv", na='..')
 # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770019 
 enrol=mutate(enrol, Ref_Date = as.numeric(str_extract( enrol[['Ref_Date']], "^[:digit:]+")) )
-glimpse(enrol)
+# glimpse(enrol)
 
-enrol %>% filter( Coordinate=="1.2.1.13.9.1.1") %>% select(Ref_Date, Value) %>% ggplot( aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1) 
- 
 #### Graduates ####
 grad=read_csv("./Data/04770020-eng.csv", na='..')
 # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770020
-glimpse(grad)
-
-grad %>% filter( Coordinate=="1.2.13.9.1.1") %>% select(Ref_Date, Value) %>% ggplot( aes(Ref_Date,Value)) + geom_point(size=3) + geom_line(lwd=1)
-
+# glimpse(grad)
 
 #### UofT ####
 #Data from http://cudo.utoronto.ca/
 #Tri-campus data collected by data 
 cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
 
-cudo_UT %>% filter( FoS=="CS") %>% select(Year, Enroll) %>% ggplot( aes(Year,Enroll)) + geom_point(size=3) + geom_line(lwd=1)
-
-
+#### Programs ####
+lop = read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = TRUE, delim=',')
+progs=list()
+#for(i in 1:length(lop$ShortName)){
+for(i in 1:3){
+  fname=paste("./Data/Stats Program Data - ", lop$ShortName[i], ".csv", sep="")
+  progs[[i]]= read_delim(fname, col_names = TRUE, delim=',')
+  progs[[i]]= mutate(progs[[i]], Univ=lop$ShortName[i])
+}
+aprogs=do.call(bind_rows,progs[1:3]) # all programs
 
