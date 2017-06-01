@@ -11,8 +11,15 @@ rm(list=ls())
 (PROVOFSTUDY_levels=c("10", "12", "13", "24", "35", "46", "47", "48", "59" ))
 (PROVOFSTUDY_labels=c("NL", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC" ))
 (REGION_levels=c("Atlantic", "Atlantic", "Atlantic", "QC", "ON", "Prairies", "Prairies", "Prairies", "BC" ))
+# Key for Stats Programs
+# 26.1102	Biostatistics
+# 27.0501	Statistics, General
+# 27.0502	Mathematical Statistics and Probability
+# 27.0599	Statistics, Other
+# 27.9999	Mathematics and Statistics, Other
+# 52.1302	Business Statistics
 
-enrol = read_delim("./Data/PSIS/RTRA_PSIS_enrollments.csv",delim = ",", col_names=TRUE)
+enrol = read_delim("./Data/PSIS/psis_enrolments.csv",delim = ",", col_names=TRUE)
 enrol = enrol[apply( !apply(enrol[,1:5],2,is.na), 1, all), ]
 names(enrol)=str_replace_all(names(enrol),"PSIS_","")
 names(enrol)=str_replace_all(names(enrol),"_CODE","")
@@ -24,6 +31,15 @@ enrol= enrol %>% mutate(ENROLMENTS = COUNT) %>% select(-COUNT)
 enrol= enrol %>% mutate(LEVEL = factor(PCSCE_D, levels=c("66","76","86"), labels=c("BSc","MSc","PhD") )) %>% select(-PCSCE_D)
 enrol= enrol %>% mutate(PROVINCE = factor(PROVOFSTUDY, levels=PROVOFSTUDY_levels, labels=PROVOFSTUDY_labels )) %>% select(-PROVOFSTUDY)
 enrol= enrol %>% mutate(REGION = PROVINCE); levels(enrol$REGION)=REGION_levels
+enrol= enrol %>% mutate(PROGRAM = factor(PRGCODE, levels=c("26.1102","27.0501","27.0502","27.0599","27.9999","52.1302"), 
+                                         labels=c("Biostatistics",
+                                                  "Statistics, General",
+                                                  "Mathematical Statistics and Probability",
+                                                  "Statistics, Other",
+                                                  "Mathematics and Statistics, Other",
+                                                  "Business Statistics") ))
+
+
 
 #### Graduates ####
 grad = read_delim("./Data/PSIS/RTRA_PSIS_graduates.csv",delim = ",", col_names=TRUE)
@@ -38,6 +54,14 @@ grad= grad %>% mutate(GRADUATES = COUNT) %>% select(-COUNT)
 grad= grad %>% mutate(LEVEL = factor(PCSCE_D, levels=c("66","76","86"), labels=c("BSc","MSc","PhD") )) %>% select(-PCSCE_D)
 grad= grad %>% mutate(PROVINCE = factor(PROVOFSTUDY, levels=PROVOFSTUDY_levels, labels=PROVOFSTUDY_labels )) %>% select(-PROVOFSTUDY)
 grad= grad %>% mutate(REGION = PROVINCE); levels(grad$REGION)=REGION_levels
+grad= grad %>% mutate(PROGRAM = factor(PRGCODE, levels=c("26.1102","27.0501","27.0502","27.0599","27.9999","52.1302"), 
+                                         labels=c("Biostatistics",
+                                                  "Statistics, General",
+                                                  "Mathematical Statistics and Probability",
+                                                  "Statistics, Other",
+                                                  "Mathematics and Statistics, Other",
+                                                  "Business Statistics") ))
+
 
 # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770019
 # enrol=read_csv("./Data/04770019-eng.csv", na='..')
@@ -51,20 +75,28 @@ grad= grad %>% mutate(REGION = PROVINCE); levels(grad$REGION)=REGION_levels
 cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
 
 #### Programs ####
-lop = read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = TRUE, delim=',')
-lop = lop %>% filter(`Honours/Specialist`=="Y")
+# list of programs
+lop=read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = TRUE, delim=',')
+lop=lop %>% filter(Hons_Spec=="Y") %>% # remove non-Honours/Specialist programs
+  select(c(2:6)) # keep only relevant columns
+lop=lop %>% mutate(PROVINCE = as.factor(PROVINCE))
+lop=lop %>% mutate(REGION = PROVINCE); levels(lop$REGION)=REGION_levels
+
 progs=list()
-#for(i in 1:length(lop$ShortName)){
 for(i in 1:nrow(lop)){
-  fname=paste("./Data/Stats Program Data - ", lop$ShortName[i], ".csv", sep="")
-  progs[[i]]= read_delim(fname, col_names = TRUE, delim=',')
-  progs[[i]]= mutate(progs[[i]], Univ=lop$ShortName[i])
+  fname=paste("./Data/Stats Program Data - ", lop$UNIVERSITY[i], ".csv", sep="")
+  progs[[i]]=read_delim(fname, col_names = TRUE, delim=',')
 }
-aprogs=do.call(bind_rows,progs) # all programs
+
+lop=lop %>% mutate( PROGRAMS = progs )
+
+# all programs tibble
+aprogs=lop %>% unnest(PROGRAMS)
 aprogs=mutate(aprogs, Category= str_replace_all(Category," ",""))
 aprogs=mutate(aprogs, Category = str_split(Category, ",") )
 aprogs=mutate(aprogs, Discipline= str_replace_all(Discipline," ",""))
 aprogs=mutate(aprogs, Discipline = str_split(Discipline, ",") )
 aprogs=mutate(aprogs, Level = str_replace_all(Level," ",""))
 aprogs=mutate(aprogs, Level = str_split(Level,""))
+
 
