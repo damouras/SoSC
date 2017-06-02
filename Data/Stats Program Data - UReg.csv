@@ -1,0 +1,26 @@
+Code,Title,Credits,Description,Prerequisites,Exclusions,Discipline,Level,Type,Category,Comments
+,Calculus I,0.5,,,,MATH,1,E,MT,MATH 105 or 110
+MATH 111,Calculus II,0.5,"Differentiation and integration of exponential and logarithmic functions; methods of integration and applications; indeterminate forms, L'Hospital's rule and improper integrals; first order differential equations: separable equations, linear equations, exact equations, modeling, and applications; Taylor Series.",MATH 110,None,MATH,1,R,MT,
+MATH 122,Linear Algebra I,0.5,"A course intended to introduce students to elementary linear algebra, particularly at a computational and applied level. Topics include matrices and systems of equations, inversion, determinants, vectors, inner products, eigenvectors and eigenvalues.","Precalculus 30, Mathematics B30 and C30, or Math 102.",None,MATH,1,R,MT,
+,,0.5,,,,STAT,"1,2",E,"ST, SM","STAT 160, 200, or 289"
+STAT 251,Introduction to Probability,0.5,Basic notions of probability; discrete and continuous random variables; expectation; moment generating functions; joint discrete random variables.,MATH 111 or MATH 112 and one of STAT 160 or STAT 200,MATH 251,STAT,2,R,"PT, ST",
+STAT 252,Introduction to Statistical Inference,0.5,"Sampling distribution theory and the Central Limit Theorem; large sample theory; methods of estimation and hypothesis testing including maximum likelihood estimation, likelihood ratio testing, and confidence interval construction.",STAT 251,None,STAT,2,R,"ST, SM",
+STAT 351,Intermediate Probability,0.5,Multivariate random variables; conditioning; order statistics; the multivariate normal distribution; the Poisson process.,MATH 213 and STAT 251,None,STAT,3,R,"PT, ST",
+STAT 354,Linear Statistical Methods,0.5,Simple linear regression; multiple linear regression; diagnostics and remedial measures for regression models; remedial measures and alternative regression techniques; multicollinearity diagnostics.,STAT 252 and CS 110 and MATH 122,None,STAT,3,R,"ST, SM",
+STAT 357,Sampling Theory,0.5,Simple random sampling; systematic sampling; stratified and cluster sampling; ratio and regression estimators.,STAT 252 and CS 110,None,STAT,3,R,"SM, SP",
+STAT 452,Advanced Statistical Inference,0.5,Detailed theoretical development of statistical inference; statistical models; exponential families; sufficiency; completeness; properties of point estimation; testing hypotheses and confidence regions; asymptotic properties of estimators,STAT 351 and STAT 252,None,STAT,4,R,"ST, SM",
+STAT 485,Design and Analysis of Experiments,0.5,"Theory and application of analysis of variance for standard experimental designs including blocked, nested, factorial, Latin square, and split-plot designs; fixed and random effects; multiple comparisons; analysis of covariance",STAT 354,None,STAT,4,R,"SM, SP",
+,,2.0,,,,STAT,"3,4",E,"ST, SM, SP","Four courses from: STAT 362, 384, 386, 426, 441, 451, 454, 456, 471, 495, 496, 497, 498"
+CS 110,Programming and Problem Solving,0.5,"An introduction to problem-solving techniques, the fundamental concepts of programming, and the software design process. Topics will include: data types, control structures, scope rules, functions, files, and the mechanics of running, testing and debugging. Problems will be drawn from various science disciplines","Precalculus 30, Calculus 30, or Math 102",None,COMP,1,R,CS,
+ENGL 100,Critical Reading and Writing I,0.5,"This course develops students' proficiency in critical reading and writing through the study of a wide range of non-literary and literary texts, and the study of composition, with emphasis on connections between modes of reading and writing.",None,None,OTHR,1,R,OT,
+ENGL 110,Critical Reading and Writing II,0.5,"A study of a special topic in literature, which may include non-literary texts, in conjunction with a continuation of the writing program begun in ENGL 100",ENGL 100,None,OTHR,1,R,OT,
+,,2.0,,,,OTHR,,FE,OT,Four Arts or Fine Arts electives
+,,1.0,,,,OTHR,,FE,OT,Two Natural Science electives
+,,2.5,,,,OTHR,,FE,OT,Five Science electives
+,,2.5,,,,OTHR,,FE,OT,"Five Science, Arts, or Fine Arts electives"
+,,2.5,,,,OTHR,,FE,OT,Five Open electives
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,NOTE: The University of Regina (Parent Institution) only offers a Major in Statistics; there is no Specialist/Honours Program in Statistics.

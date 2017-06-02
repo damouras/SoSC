@@ -2,7 +2,7 @@ library(tidyverse)
 library(stringr)
 library(ggplot2)
 
-setwd("~/GitHub/SoSE")
+setwd("~/GitHub/SoSC")
 rm(list=ls())
 
 #### Enrolments ####
@@ -10,6 +10,13 @@ rm(list=ls())
 # Key for province codes  http://www.statcan.gc.ca/pub/92-195-x/2011001/geo/prov/tbl/tbl8-eng.htm
 (PROVOFSTUDY_levels=c("10", "12", "13", "24", "35", "46", "47", "48", "59" ))
 (PROVOFSTUDY_labels=c("NL", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC" ))
+prov2reg=function(x){
+  prov=c("AB" "BC" "MB" "NB" "NL" "NS" "ON" "QC" "SK")
+  reg= c("Prairies","BC","Prairies","Atlantic","Atlantic","Atlantic","ON","QC","Prairies")
+  
+}
+
+
 (REGION_levels=c("Atlantic", "Atlantic", "Atlantic", "QC", "ON", "Prairies", "Prairies", "Prairies", "BC" ))
 # Key for Stats Programs
 # 26.1102	Biostatistics
@@ -77,21 +84,25 @@ cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
 #### Programs ####
 # list of programs
 lop=read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = TRUE, delim=',')
-lop=lop %>% filter(Hons_Spec=="Y") %>% # remove non-Honours/Specialist programs
-  select(c(2:6)) # keep only relevant columns
 lop=lop %>% mutate(PROVINCE = as.factor(PROVINCE))
-lop=lop %>% mutate(REGION = PROVINCE); levels(lop$REGION)=REGION_levels
+lop=lop %>% mutate(REGION = PROVINCE); levels(lop$REGION)
+levels(lop$REGION) = c("Prairies","BC","Prairies","Atlantic","Atlantic","Atlantic","ON","QC","Prairies")
 
+ 
+
+# Honours/Specialist programs only
+lop.hs=lop %>% filter(Hons_Spec=="Y") %>% select(c(2:6)) # keep only relevant columns
+  
 progs=list()
-for(i in 1:nrow(lop)){
-  fname=paste("./Data/Stats Program Data - ", lop$UNIVERSITY[i], ".csv", sep="")
+for(i in 1:nrow(lop.hs)){
+  fname=paste("./Data/Stats Program Data - ", lop.hs$UNIVERSITY[i], ".csv", sep="")
   progs[[i]]=read_delim(fname, col_names = TRUE, delim=',')
 }
 
-lop=lop %>% mutate( PROGRAMS = progs )
+lop.hs=lop.hs %>% mutate( PROGRAMS = progs )
 
-# all programs tibble
-aprogs=lop %>% unnest(PROGRAMS)
+# all program info tibble 
+aprogs=lop.hs %>% unnest(PROGRAMS)
 aprogs=mutate(aprogs, Category= str_replace_all(Category," ",""))
 aprogs=mutate(aprogs, Category = str_split(Category, ",") )
 aprogs=mutate(aprogs, Discipline= str_replace_all(Discipline," ",""))
