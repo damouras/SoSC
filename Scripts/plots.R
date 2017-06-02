@@ -1,6 +1,8 @@
 source("./Scripts/load data.R") 
 
-theme_set(theme_bw()); theme_update( text = element_text(size=14) )
+theme_set(theme_bw()); 
+theme_update( text = element_text(size=12) )
+theme_update(plot.title = element_text(size = 15, face = "bold"))
 
 # Key for Stats Programs
 # 26.1102	Biostatistics
@@ -10,58 +12,88 @@ theme_set(theme_bw()); theme_update( text = element_text(size=14) )
 
 ##### Enrollment & Graduates ####
 
-
-#### Vital Stats ####
+#### Vital Stats
 enrol %>% filter(PRGCODE %in% c(26.1102, 27.0501,27.0502,27.0599), YEAR >= as.Date('2010-01-01') ) %>% 
   group_by(YEAR,LEVEL) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>%
   ggplot(aes(x=YEAR,y=ENROLMENTS, col=LEVEL, shape=LEVEL)) + geom_line(size=1.5) + geom_point(size=5) + 
-  scale_y_continuous(limits=c(0,2000)) 
+  scale_y_continuous(limits=c(0,2000)) + ggtitle("Stats Enrolments Time Series by Level of Study")
 
 grad %>% filter(PRGCODE %in% c(27.0501,27.0502,27.0599), YEAR >= as.Date('2010-01-01') ) %>% 
   group_by(YEAR,LEVEL) %>% summarise(GRADUATES=sum(GRADUATES))%>%
   ggplot(aes(x=YEAR,y=GRADUATES, col=LEVEL, shape=LEVEL)) + geom_line(size=1.5) + geom_point(size=5) + 
-  scale_y_continuous(limits=c(0,400)) 
+  scale_y_continuous(limits=c(0,400)) + ggtitle("Stats Graduates Time Series by Level of Study")
 
 enrol %>% filter(PRGCODE %in% c(26.1102, 27.0501,27.0502,27.0599), 
                  YEAR %in% c( as.Date('2010-01-01'),  as.Date('2014-01-01') ) ) %>% 
   group_by(YEAR,LEVEL) %>% summarise(ENROLMENTS=sum(ENROLMENTS))
 
-#### BSc Enrolment Breakdown ####
+#### BSc Enrolment Breakdown
 
 enrol %>% filter(PRGCODE %in% c(26.1102, 27.0501,27.0502,27.0599), LEVEL=="BSc", YEAR == as.Date('2014-01-01') ) %>% 
-  group_by(REGION, GENDER) %>% summarise(STAT_BSc_ENROLMENTS=sum(ENROLMENTS))%>%
-  ggplot(aes(x=REGION,y=STAT_BSc_ENROLMENTS, fill=GENDER)) + geom_bar(stat="identity")
+  group_by(SEX, REGION) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>%
+  ggplot(aes(x=REGION, y=ENROLMENTS, fill=SEX)) + 
+  geom_bar(stat = "identity")+
+  scale_x_discrete(limits = c("Atlantic","BC","ON","QC","Prairies")) + 
+  ggtitle("Stats BSc Enrolments (2014) by Region/Sex")
+
+enrol_all %>% group_by(REGION, SEX) %>% summarise(ENROLMENTS =sum(Value)) %>% 
+  ggplot(aes(x=REGION,y=ENROLMENTS, fill=SEX)) + geom_bar(stat="identity") +
+  scale_x_discrete(limits = c("Atlantic","BC","ON","QC","Prairies")) + 
+  ggtitle("Total BSc Enrolments (2014) by Region/Sex")
+
+enrol %>% filter(PRGCODE %in% c(26.1102, 27.0501,27.0502,27.0599), LEVEL=="BSc", YEAR == as.Date('2014-01-01') ) %>% 
+  group_by(SEX) %>% summarise(ENROLMENTS=sum(ENROLMENTS))
   
-lop %>% group_by(REGION) %>% summarise(UNIVERSITY_ENROLMENTS=sum(Enrolment))%>%
-  ggplot(aes(x=REGION,y=UNIVERSITY_ENROLMENTS)) + geom_bar(stat="identity")
-
-
-
-
-
-
-
-
-
-
-
-
-
-enrol %>% filter(PRGCODE %in% c(27.0501,27.0502,27.0599), LEVEL=="BSc", YEAR == as.Date('2014-01-01') ) %>% 
-  group_by(GENDER, REGION) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>%
-  ggplot(aes(x=REGION, y=ENROLMENTS, fill=GENDER)) + geom_bar(stat = "identity")
-
-
-enrol %>% filter(PRGCODE %in% c(27.0501,27.0502,27.0599), YEAR >= as.Date('2009-01-01') ) %>% 
-  group_by(YEAR, LEVEL) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>%
-  ggplot(aes(x=YEAR,y=ENROLMENTS, col=LEVEL, shape=LEVEL)) + geom_line(size=1.2) + geom_point(size=3) + scale_y_continuous(limits=c(0,2000)) 
-grad %>% filter(PRGCODE %in% c(27.0501,27.0502,27.0599), YEAR >= as.Date('2009-01-01') ) %>% 
-  group_by(YEAR, LEVEL) %>% summarise(GRADUATES=sum(GRADUATES))%>%
-  ggplot(aes(x=YEAR,y=GRADUATES, col=LEVEL, shape=LEVEL)) + geom_line(size=1.2) + geom_point(size=3) + scale_y_continuous(limits=c(0,2000)) 
-
 
 ##### Programs ####
 
+#### List of Universities
+#### of Credits
 
-## by Discipline
+aprogs %>%  filter(Type!="FE") %>% group_by(UNIVERSITY,REGION) %>% summarise(Credits=sum(Credits)) %>%
+  ggplot(aes(x=UNIVERSITY, y=Credits, fill=REGION)) + geom_bar(stat="identity") + coord_flip() + 
+  scale_x_discrete(limits = as.character(lop.hs%>%arrange(desc(as.character(REGION)))%>%.[['UNIVERSITY']]) )  
+
+#### by Discipline
+
+aprogs %>% mutate( test = sapply( Discipline, paste, collapse=" ") ) %>%
+  filter( !(test %in% c("MATH","STAT","OTHR","COMP") ) ) %>% select(UNIVERSITY,Discipline)
+                   
+aprogs_dis = aprogs %>% filter(Type!="FE") %>% select(-Category,-Level) %>% 
+  mutate(Credits = Credits / sapply(Discipline, length) ) %>% unnest( )
+aprogs_dis=aprogs_dis %>% mutate(Discipline = factor(Discipline, levels=c("COMP","MATH","STAT","OTHR"))) 
+levels(aprogs_dis$Discipline)
+
+aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(COURSES = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Discipline, fill = list(COURSES=0)) %>%
+  ggplot(aes(x=Discipline,y=COURSES)) + stat_summary(fun.y=mean, geom="bar") 
+
+
+aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(COURSES = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Discipline, fill = list(COURSES=0)) %>%
+  ggplot(aes(x=Discipline,y=COURSES)) + stat_boxplot() 
+
+aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(n_Courses = sum(Credits)*2) %>% complete(UNIVERSITY,Discipline, fill = list(n_Courses=0)) %>%
+  ggplot(aes(x=Discipline,y=n_Courses)) + geom_boxplot()
+
+## by Category
+aprogs_cat = aprogs %>% filter(Type!="FE") %>% select(-Discipline,-Level) %>% 
+  mutate(Credits = Credits / sapply(Category, length) ) %>% unnest( )
+aprogs_cat = mutate( aprogs_cat, Category = factor(Category))
+aprogs_cat %>% group_by(UNIVERSITY,Category) %>% summarize(n_Courses = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Category, fill = list(n_Courses=0)) %>%
+  ggplot(aes(x=Category,y=n_Courses)) + geom_boxplot()
+
+## by Level
+aprogs_lev = aprogs %>% filter(Type!="FE") %>% select(-Category,-Discipline) %>% 
+  mutate(Credits = Credits / sapply(Level, length) ) %>% unnest( )
+aprogs_lev=aprogs_lev %>% mutate(Level = factor(Level))
+
+aprogs_lev %>% group_by(UNIVERSITY,Level) %>% summarize(n_Courses = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Level, fill = list(n_Courses=0)) %>% mutate(Level=as.numeric(Level)) %>%
+  ggplot(aes(x=Level,y=n_Courses,col=UNIVERSITY)) + geom_line()  
+
+
+
+
 
