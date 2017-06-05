@@ -2,7 +2,6 @@ library(tidyverse)
 library(stringr)
 library(ggplot2)
 
-setwd("~/GitHub/SoSC")
 rm(list=ls())
 
 #### Enrolments ####
@@ -92,7 +91,7 @@ lop=read_delim("./Data/Stats Program Data - List of Programs.csv", col_names = T
 lop=lop %>% mutate(PROVINCE = as.factor(PROVINCE))
 lop=lop %>% mutate(REGION = PROVINCE)
 levels(lop$REGION) = c("Prairies","BC","Prairies","Atlantic","Atlantic","Atlantic","ON","Atlantic","QC","Prairies")
-lop%>% select(PROVINCE,REGION)%>%unique()
+#lop%>% select(PROVINCE,REGION)%>%unique()
 
 # Honours/Specialist programs only
 lop.hs=lop %>% filter(Hons_Spec=="Y") %>% select(c(2:6),REGION) # keep only relevant columns
@@ -100,8 +99,19 @@ lop.hs=lop.hs %>% mutate( REGION = factor(REGION,levels(REGION)[c(3,2,4,1,5)] ) 
 
 progs=list()
 for(i in 1:nrow(lop.hs)){
+  print( paste( i, " --- ", lop.hs$UNIVERSITY[i] ) )
   fname=paste("./Data/Stats Program Data - ", lop.hs$UNIVERSITY[i], ".csv", sep="")
-  progs[[i]]=read_delim(fname, col_names = TRUE, delim=',')
+  progs[[i]]=read_csv(fname, col_names = TRUE, col_types = cols( 
+    Code = col_character(),
+    Title = col_character(),
+    Description = col_character(),
+    Prerequisites = col_character(),
+    Exclusions = col_character(),
+    Discipline = col_character(),
+    Level = col_character(),
+    Type = col_character(),
+    Category = col_character(),
+    Comments = col_character() ) )
 }
 
 lop.hs=lop.hs %>% mutate( PROGRAMS = progs )
@@ -114,5 +124,5 @@ aprogs=mutate(aprogs, Discipline= str_replace_all(Discipline," ",""))
 aprogs=mutate(aprogs, Discipline = str_split(Discipline, ",") )
 aprogs=mutate(aprogs, Level = str_replace_all(Level," ",""))
 aprogs=mutate(aprogs, Level = str_split(Level,""))
-
+aprogs=mutate(aprogs, Type = factor(Type, levels=c("R","E","FE"), labels=c("Core","Elect","Free")))
 

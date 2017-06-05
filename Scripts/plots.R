@@ -48,11 +48,27 @@ enrol %>% filter(PRGCODE %in% c(26.1102, 27.0501,27.0502,27.0599), LEVEL=="BSc",
 ##### Programs ####
 
 #### List of Universities
-#### of Credits
+aprogs %>%  group_by(UNIVERSITY) %>% slice(1) %>%
+  ggplot(aes(x=UNIVERSITY, y=Enrolment, fill=REGION)) + geom_bar(stat="identity") + coord_flip() +
+  scale_x_discrete(limits = as.character(lop.hs%>%arrange(desc(as.character(REGION)))%>%.[['UNIVERSITY']]) ) +
+  ggtitle("List of Universities with Stats Honours/Specialist program") + labs(y="TOTAL UNIVERSITY ENROLMENT") 
 
-aprogs %>%  filter(Type!="FE") %>% group_by(UNIVERSITY,REGION) %>% summarise(Credits=sum(Credits)) %>%
-  ggplot(aes(x=UNIVERSITY, y=Credits, fill=REGION)) + geom_bar(stat="identity") + coord_flip() + 
-  scale_x_discrete(limits = as.character(lop.hs%>%arrange(desc(as.character(REGION)))%>%.[['UNIVERSITY']]) )  
+
+#### Number of Credits
+
+aprogs %>% filter(Type!="Free") %>% group_by(UNIVERSITY,Type) %>% summarise(N_COURSES=2*sum(Credits)) %>%
+  ggplot(aes(x=UNIVERSITY, y=N_COURSES, fill=Type)) + geom_bar(stat="identity") + coord_flip() + 
+  scale_x_discrete(limits = as.character(lop.hs%>%arrange(desc(as.character(REGION)))%>%.[['UNIVERSITY']]) )  +
+  ggtitle("Program Requirements by University") + labs(y="NUMBER of SEMESTER COURSES") +
+  geom_col(position = position_stack(reverse = TRUE))
+
+aprogs %>% filter(Type!="Free") %>% group_by(UNIVERSITY) %>% summarise(N_COURSES=2*sum(Credits)) %>%
+  ggplot(aes(x="", y=N_COURSES)) + geom_boxplot() 
+
+aprogs %>% filter(Type!="Free") %>% group_by(UNIVERSITY, Type) %>% 
+  summarise(n=2*sum(Credits)) %>% mutate( Ratio = n/sum(n)) %>%
+  filter(Type=="Core") %>% select(Ratio) %>% summary()
+  
 
 #### by Discipline
 

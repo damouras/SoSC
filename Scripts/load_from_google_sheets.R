@@ -2,8 +2,6 @@
 library(gsheet)
 library(readr)
 
-setwd("~/GitHub/SoSC")
-
 gs_url=c(
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=0',
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=362070266',
