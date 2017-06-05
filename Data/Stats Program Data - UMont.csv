@@ -14,9 +14,9 @@ IFT 1969,Scientific programming in C language,0.5,"Basic elements of programming
 MAT 1400,Calculation 1,0.5,"Suites, series. Functions of several variables, continuity, partial derivatives, differential, tangent plane, chain derivative. Gradient, level surfaces, extremums. Multiple integers, change of variables, Jacobian",None,None,MATH,1.0,R,MT,NA
 MAT 1600,Linear Algebra,0.5,"Systems of linear equations, Gaussian elimination, matrix inverse. Vector space, linear independence, linear transformations, base change. Scalar product. Determinants. Diagonalization. Examples of applications.",None,None,MATH,1.0,R,MT,NA
 MAT 1720,Probabilities,0.5,Probability space. Combinatory analysis. Conditional probability. Independence. Random variable. Distribution function and generating function. Expectation. Weak law of large numbers. The central limit theorem.,MAT 1400; Corequisite: MAT 1720 and MAT 1600,None,"MATH, STAT",1.0,R,"PT, ST",NA
-NA,NA,2.5-3.5,NA,NA,NA,OTHR,23.0,E,"SP, OT","Minimum 5 courses, maximum 7 courses from: DMO 2100; DMO 2170; DMO 2700; DMO 3100; DMO 3150; DMO 3400; DMO 3420; DMO 3450"
-NA,NA,0.5-1.5,NA,NA,NA,STAT,23.0,E,"ST, SP","Minimum 1 course, maximum 3 courses from: STT 2100; STT 3500; STT 3700"
-NA,NA,1.0-2.0,NA,NA,NA,STAT,23.0,E,"ST, SP, SM","Minimum 2 courses, maximum 4 courses from: STT 2305; STT 3220; STT 3260; STT 3410; STT 3505; STT 3510; STT 3781"
-NA,NA,0-1.0,NA,NA,NA,MATH,12.0,E,"MT, PT, ST",Optional- maximum 2 courses from: MAT 1000; MAT 1410; MAT 2050; MAT 2412; MAT 2717
-NA,NA,1.0-1.5,NA,NA,NA,OTHR,123.0,E,"SP, OT","Minimum 2 courses, maximum 3 courses from: ECN 1000; ECN 1040; ECN 1050; ECN 2311; GEO 1212; GEO 1222; GEO 1532; GEO 2512; HST 1042; HST 2446; SOL 1013; SOL 1967; SOL 3201"
+NA,NA,3.0,NA,NA,NA,OTHR,23.0,E,"SP, OT","Minimum 5 courses, maximum 7 courses from: DMO 2100; DMO 2170; DMO 2700; DMO 3100; DMO 3150; DMO 3400; DMO 3420; DMO 3450"
+NA,NA,1.0,NA,NA,NA,STAT,23.0,E,"ST, SP","Minimum 1 course, maximum 3 courses from: STT 2100; STT 3500; STT 3700"
+NA,NA,1.5,NA,NA,NA,STAT,23.0,E,"ST, SP, SM","Minimum 2 courses, maximum 4 courses from: STT 2305; STT 3220; STT 3260; STT 3410; STT 3505; STT 3510; STT 3781"
+NA,NA,0.5,NA,NA,NA,MATH,12.0,E,"MT, PT, ST",Optional- maximum 2 courses from: MAT 1000; MAT 1410; MAT 2050; MAT 2412; MAT 2717
+NA,NA,1.0,NA,NA,NA,OTHR,123.0,E,"SP, OT","Minimum 2 courses, maximum 3 courses from: ECN 1000; ECN 1040; ECN 1050; ECN 2311; GEO 1212; GEO 1222; GEO 1532; GEO 2512; HST 1042; HST 2446; SOL 1013; SOL 1967; SOL 3201"
 NA,NA,0.5,NA,NA,NA,OTHR,NA,FE,OT,Choice- 1 course
