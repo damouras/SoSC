@@ -14,4 +14,21 @@ List of courses in program:
 Classification of courses: 
 Discipline: MATH / STAT / COMP / OTHER
 
+------------------------
+The Status of Statistics Curricula in Canada
 
+This talk will review the current state of undergraduate Statistics curricula at universities across Canada. We will present both quantitative and qualitative information on the structure and composition of Major programs in Statistics. More specifically, we will look at the number and type of course requirements for each program, the learning outcomes they serve, the topics and skills they develop, as well as other relevant information. The talk intends to give an overview of how we collectively educate Statisticians, with the ultimate goal of helping identify directions for future curricular development.
+Date and Time: 
+Wednesday, June 14, 2017 -
+16:00 to 16:15
+Co-authors (not including you): 
+Sohee Kang
+University of Toronto Scarborough
+Language of Oral Presentation: 
+English
+Language of Visual Aids: 
+English
+Type of Presentation: 
+Contributed
+Session: 
+Teaching Statistics: New Perspectives

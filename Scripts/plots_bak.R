@@ -56,21 +56,41 @@ cudo_UT %>% ggplot() + geom_line(aes(x=Year, y=Enroll, group = FoS, colour=FoS))
 ##### Programs ####
 
 
-## by Discipline
+#### by Discipline
 
-aprogs %>%  filter(Type!="FE") %>% group_by(Univ) %>% summarise(Credits=sum(Credits)) %>%
-                   ggplot(aes(x=Univ, y=Credits)) + geom_bar(stat="identity") 
-  
-aprogs_dis = aprogs %>% filter(Type!="FE") %>% select(-Category,-Level) %>% 
-  mutate(Credits = Credits / sapply(Discipline, length) ) %>% unnest( )
-aprogs_dis=mutate(aprogs_dis, Discipline = factor(Discipline))
+aprogs_dis = aprogs %>% filter(Type!="Free") %>% 
+  mutate(Credits = Credits / sapply(Discipline, length) ) %>% unnest(Discipline)
+aprogs_dis=aprogs_dis %>% mutate(Discipline = factor(Discipline, levels=c("COMP","MATH","STAT","OTHR"))) 
 
-aprogs_dis %>% group_by(Univ,Discipline) %>% summarize(n_Courses = sum(Credits)*2) %>% 
-  complete(Univ,Discipline, fill = list(n_Courses=0)) %>%
-  ggplot(aes(x=Discipline,y=n_Courses)) + stat_summary(fun.y=mean, geom="bar")
-
-aprogs_dis %>% group_by(Univ,Discipline) %>% summarize(n_Courses = sum(Credits)*2) %>% complete(Univ,Discipline, fill = list(n_Courses=0)) %>%
+aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(n_Courses = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Discipline, fill = list(n_Courses=0)) %>%
   ggplot(aes(x=Discipline,y=n_Courses)) + geom_boxplot()
+
+
+
+aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(COURSES = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Discipline, fill = list(COURSES=0)) %>%
+  ggplot(aes(x=Discipline,y=COURSES)) + stat_summary(fun.y=mean, geom="bar") 
+
+
+aprogs_dis_lev = aprogs %>% filter(Type!="Free") %>% 
+  mutate(Credits = Credits / sapply(Discipline, length) ) %>% unnest(Discipline, .drop=FALSE) %>%
+  mutate(Credits = Credits / sapply(Level, length) ) %>% unnest(Level)
+aprogs_dis_lev=aprogs_dis_lev %>% mutate(Discipline = factor(Discipline, levels=c("COMP","MATH","STAT","OTHR"))) 
+aprogs_dis_lev=aprogs_dis_lev %>% mutate(Level = factor(Level, levels=c("1","2","3","4"))) 
+
+aprogs_dis_lev %>% group_by(Discipline, Level) %>% summarise(Credits=sum(Credits)) %>% 
+  mutate(Proportion = Credits/(sum(aprogs_dis$Credits))) %>%
+  ggplot(aes(x=Discipline,y=Proportion, fill=Level)) + geom_bar(stat='Identity')+
+  geom_col(position = position_stack(reverse = TRUE))
+
+aprogs_dis_lev %>% group_by(Discipline, Level) %>% summarise(Credits=sum(Credits)*2/24) %>% 
+  mutate(Level = as.integer(Level)) %>%  
+  ggplot(aes(x=Level,y=Credits, col=Discipline, shape=Discipline)) + 
+  geom_line(size=1.5) + geom_point(size=5) +
+  scale_shape_manual(values=c(15,16,17,18)) + 
+  ggtitle("Average # of Courses per Course Discipline and Level") + labs(y="TOTAL UNIVERSITY ENROLMENT") 
+
 
 ## by Category
 aprogs_cat = aprogs %>% filter(Type!="FE") %>% select(-Discipline,-Level) %>% 
