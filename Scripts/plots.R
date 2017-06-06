@@ -72,18 +72,15 @@ aprogs %>% filter(Type!="Free") %>% group_by(UNIVERSITY, Type) %>%
 
 #### by Discipline
 
-aprogs %>% mutate( test = sapply( Discipline, paste, collapse=" ") ) %>%
-  filter( !(test %in% c("MATH","STAT","OTHR","COMP") ) ) %>% select(UNIVERSITY,Discipline)
-                   
-aprogs_dis = aprogs %>% filter(Type!="FE") %>% select(-Category,-Level) %>% 
+aprogs_dis = aprogs %>% filter(Type!="Free") %>% select(-Category,-Level) %>% 
   mutate(Credits = Credits / sapply(Discipline, length) ) %>% unnest( )
+
 aprogs_dis=aprogs_dis %>% mutate(Discipline = factor(Discipline, levels=c("COMP","MATH","STAT","OTHR"))) 
 levels(aprogs_dis$Discipline)
 
 aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(COURSES = sum(Credits)*2) %>% 
   complete(UNIVERSITY,Discipline, fill = list(COURSES=0)) %>%
   ggplot(aes(x=Discipline,y=COURSES)) + stat_summary(fun.y=mean, geom="bar") 
-
 
 aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(COURSES = sum(Credits)*2) %>% 
   complete(UNIVERSITY,Discipline, fill = list(COURSES=0)) %>%
@@ -93,22 +90,32 @@ aprogs_dis %>% group_by(UNIVERSITY,Discipline) %>% summarize(n_Courses = sum(Cre
   ggplot(aes(x=Discipline,y=n_Courses)) + geom_boxplot()
 
 ## by Category
-aprogs_cat = aprogs %>% filter(Type!="FE") %>% select(-Discipline,-Level) %>% 
+aprogs_cat = aprogs %>% filter(Type!="Free") %>% select(-Discipline,-Level) %>% 
   mutate(Credits = Credits / sapply(Category, length) ) %>% unnest( )
+
 aprogs_cat = mutate( aprogs_cat, Category = factor(Category))
+
 aprogs_cat %>% group_by(UNIVERSITY,Category) %>% summarize(n_Courses = sum(Credits)*2) %>% 
   complete(UNIVERSITY,Category, fill = list(n_Courses=0)) %>%
   ggplot(aes(x=Category,y=n_Courses)) + geom_boxplot()
 
 ## by Level
-aprogs_lev = aprogs %>% filter(Type!="FE") %>% select(-Category,-Discipline) %>% 
+aprogs_lev = aprogs %>% filter(Type!="Free") %>% select(-Category,-Discipline) %>% 
   mutate(Credits = Credits / sapply(Level, length) ) %>% unnest( )
+
 aprogs_lev=aprogs_lev %>% mutate(Level = factor(Level))
+
+aprogs_lev %>% filter(is.na(Level))
+
+aprogs_lev %>% select(Level) %>% unique()
 
 aprogs_lev %>% group_by(UNIVERSITY,Level) %>% summarize(n_Courses = sum(Credits)*2) %>% 
   complete(UNIVERSITY,Level, fill = list(n_Courses=0)) %>% mutate(Level=as.numeric(Level)) %>%
   ggplot(aes(x=Level,y=n_Courses,col=UNIVERSITY)) + geom_line()  
 
+aprogs_lev %>% group_by(UNIVERSITY,Level) %>% summarize(n_Courses = sum(Credits)*2) %>% 
+  complete(UNIVERSITY,Level, fill = list(n_Courses=0)) %>% mutate(Level=as.numeric(Level)) %>%
+  ggplot(aes(x=Level,y=n_Courses,col=UNIVERSITY)) + geom_line()  
 
 
 

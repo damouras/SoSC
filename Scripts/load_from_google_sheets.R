@@ -1,4 +1,4 @@
-#install.packages('gsheet')
+# install.packages('gsheet')
 library(gsheet)
 library(readr)
 
@@ -15,7 +15,7 @@ gs_url=c(
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=978836460',
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=1644061781',
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=1531659979',
-  'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=2037057410',
+  'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=2037057410', #"UQaM"
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=600598602',
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=810571285',
   'docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=1890498929',
@@ -45,3 +45,8 @@ for(i in 1:31){
   fname=paste("./Data/Stats Program Data - ", lop.gs$UNIVERSITY[i], ".csv", sep="")
   write_csv(temp,fname)
 }
+
+# temp=gsheet2tbl('docs.google.com/spreadsheets/d/1PCuh9TvNxHxZWvUWeH_jy5tbp1IKP9JsFbkJP0PEgwU/gid=2037057410')
+# fname=paste("./Data/Stats Program Data - UQaM.csv", sep="")
+# write_csv(temp,fname)
+

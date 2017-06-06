@@ -118,11 +118,13 @@ lop.hs=lop.hs %>% mutate( PROGRAMS = progs )
 
 # all program info tibble 
 aprogs=lop.hs %>% unnest(PROGRAMS)
-aprogs=mutate(aprogs, Category= str_replace_all(Category," ",""))
-aprogs=mutate(aprogs, Category = str_split(Category, ",") )
-aprogs=mutate(aprogs, Discipline= str_replace_all(Discipline," ",""))
-aprogs=mutate(aprogs, Discipline = str_split(Discipline, ",") )
-aprogs=mutate(aprogs, Level = str_replace_all(Level," ",""))
-aprogs=mutate(aprogs, Level = str_split(Level,""))
-aprogs=mutate(aprogs, Type = factor(Type, levels=c("R","E","FE"), labels=c("Core","Elect","Free")))
+aprogs=aprogs %>% mutate(Category= str_replace_all(Category," ","")) %>% 
+  mutate(Category = str_split(Category, ",") ) %>% 
+  mutate(Discipline= str_replace_all(Discipline," ","")) %>%
+  mutate(Discipline = str_split(Discipline, ",") ) %>%
+  mutate(Level = str_replace_all(Level," ","")) %>%
+  mutate(Level = str_replace_all(Level,".0","")) %>%
+  mutate(Level = str_replace_all(Level,",","")) %>%
+  mutate(Level = str_split(Level,"")) %>%
+  mutate(Type = factor(Type, levels=c("R","E","FE"), labels=c("Core","Elect","Free")))
 
