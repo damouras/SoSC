@@ -109,5 +109,11 @@ aprogs_lev %>% group_by(Univ,Level) %>% summarize(n_Courses = sum(Credits)*2) %>
   complete(Univ,Level, fill = list(n_Courses=0)) %>% mutate(Level=as.numeric(Level)) %>%
   ggplot(aes(x=Level,y=n_Courses,col=Univ)) + geom_line()  
 
+#### UofT ####
+#Data from http://cudo.utoronto.ca/
+#Tri-campus data collected by data 
+cudo_UT=read_csv("./Data/CUDO UofT.csv", na='..')
+
+
 
 

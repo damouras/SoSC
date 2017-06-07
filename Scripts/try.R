@@ -1,51 +1,64 @@
-library(readr)
-library(dplyr)
-library(tidyr)
-library(stringr)
-library(ggplot2)
-library(reshape2)
+source("./Scripts/load data.R") 
 
-rm(list=ls())
-# Key for province codes  http://www.statcan.gc.ca/pub/92-195-x/2011001/geo/prov/tbl/tbl8-eng.htm
-(PROVOFSTUDY_levels=c("10", "12", "13", "24", "35", "46", "47", "48", "59" ))
-(PROVOFSTUDY_labels=c("NL", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC" ))
-(REGION_levels=c("Atlantic", "Atlantic", "Atlantic", "QC", "ON", "Prairies", "Prairies", "Prairies", "BC" ))
+theme_set(theme_bw()); 
+theme_update(axis.title = element_text(size=14),
+             axis.text = element_text(size=14),
+             plot.title = element_text(size = 18, face = "bold"),
+             legend.title = element_text(size = 14),
+             legend.text = element_text(size = 14) )
 
-enrol = read_delim("./Data/PSIS/psisfreq_enrolment_2.csv",delim = ",", col_names=TRUE)
-enrol = enrol[apply( !apply(enrol[,1:5],2,is.na), 1, all), ]
-names(enrol)=str_replace_all(names(enrol),"PSIS_","")
-names(enrol)=str_replace_all(names(enrol),"_CODE","")
-names(enrol)=str_replace_all(names(enrol),"_COUNT_","COUNT")
-names(enrol)=str_replace_all(names(enrol),"CIP6_D","")
-enrol= enrol %>% mutate(YEAR = as.Date(apply( cbind(1, 1, enrol$REFYEAR_D), 1, paste, collapse="/"),"%d/%m/%Y")) %>% select(-REFYEAR_D)
-enrol= enrol %>% mutate(GENDER = factor(GENDER, levels=c("1","2"), labels=c("M","F") ))
-enrol= enrol %>% mutate(ENROLMENTS = COUNT) %>% select(-COUNT)
-enrol= enrol %>% mutate(LEVEL = factor(PCSCE_D, levels=c("66","76","86"), labels=c("BSc","MSc","PhD") )) %>% select(-PCSCE_D)
-enrol= enrol %>% mutate(PROVINCE = factor(PROVOFSTUDY, levels=PROVOFSTUDY_levels, labels=PROVOFSTUDY_labels )) %>% select(-PROVOFSTUDY)
-enrol= enrol %>% mutate(REGION = PROVINCE); levels(enrol$REGION)=REGION_levels
-enrol= enrol %>% mutate(PROGRAM = factor(PRGCODE, levels=c("26.1102","27.0501","27.0502","27.0599","27.9999","52.1302"), 
-                                         labels=c("Biostatistics",
-                                                  "Statistics, General",
-                                                  "Mathematical Statistics and Probability",
-                                                  "Statistics, Other",
-                                                  "Mathematics and Statistics, Other",
-                                                  "Business Statistics") ))
 
-# 26.1102	Biostatistics
-# 27.0501	Statistics, General
-# 27.0502	Mathematical Statistics and Probability
-# 27.0599	Statistics, Other
-# 27.9999	Mathematics and Statistics, Other
-# 52.1302	Business Statistics
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
 
-enrol %>% group_by(YEAR,PROGRAM,REGION) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>%
-  ggplot(aes(x=YEAR,y=ENROLMENTS,colour=PROGRAM)) + geom_line(size=1.2) + geom_point(size=2) + 
-  facet_grid(REGION~.)
+temp = aprogs %>% filter(sapply(Category,length)==1) %>% mutate(Category = unlist(Category)) %>%
+  filter(Category %in% c("CS","MT","PT","SM","ST","SP"))
+# %>% group_by(Category) %>% summarise( Desc_all = paste(Description, collapse=" "))
+par(mfrow=c(2,3))
+for(ctg in c("CS","MT","PT","SM","ST","SP") ){
+  my_word_cloud(temp %>% filter(Category==ctg) %>%.[['Description']] )  
+}
 
-enrol %>% filter(PROGRAM == "Mathematical Statistics and Probability") %>% 
-  group_by(YEAR,LEVEL,REGION) %>% summarise(ENROLMENTS=sum(ENROLMENTS))%>% complete(REGION) %>%
-  ggplot(aes(x=YEAR,y=ENROLMENTS,colour=LEVEL)) + geom_line(size=1.2) + geom_point(size=2) + 
-  facet_grid(REGION~.)
 
-enrol %>% filter(PROGRAM=='Biostatistics') %>% group_by(YEAR,GENDER) %>% summarise(ENROLMENTS=sum(ENROLMENTS)) %>% 
-  ggplot(aes(x=YEAR,y=ENROLMENTS,colour=GENDER)) + geom_line(size=1.5) + geom_point(size=3) 
+my_word_cloud=function(x, MAX.WRDS=25){
+  docs = Corpus(VectorSource(x))
+  toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+  docs <- tm_map(docs, toSpace, "/")
+  docs <- tm_map(docs, toSpace, "@")
+  docs <- tm_map(docs, toSpace, "\\|")
+  # Convert the text to lower case
+  docs <- tm_map(docs, content_transformer(tolower))
+  # Remove numbers
+  docs <- tm_map(docs, removeNumbers)
+  # Remove english common stopwords
+  docs <- tm_map(docs, removeWords, stopwords("english"))
+  # Remove your own stop word
+  # specify your stopwords as a character vector
+  docs <- tm_map(docs, removeWords, c("blabla1", "blabla2")) 
+  # Remove punctuations
+  docs <- tm_map(docs, removePunctuation)
+  # Eliminate extra white spaces
+  docs <- tm_map(docs, stripWhitespace)
+  # Text stemming
+  # docs <- tm_map(docs, stemDocument)
+  
+  dtm <- TermDocumentMatrix(docs)
+  m <- as.matrix(dtm)
+  v <- sort(rowSums(m),decreasing=TRUE)
+  d <- data.frame(word = names(v),freq=v)
+  head(d, 10)
+  
+  set.seed(1234)
+  wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+            max.words=MAX.WRDS, random.order=FALSE, rot.per=0.35, 
+            colors=brewer.pal(8, "Dark2"))
+
+}
+
+
+
+
+
+
