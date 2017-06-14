@@ -85,8 +85,7 @@ for(ctg in c("CS","MT","PT","SM","ST","SP") ){
   #title(main=ctg)
 }
 
-
-#### Number of Credits
+#### Number of Courses
 
 # Program Requirements by University
 aprogs %>% filter(Type!="Free") %>% group_by(UNIVERSITY,Type) %>% summarise(N_COURSES=2*sum(Credits)) %>%
@@ -136,7 +135,7 @@ aprogs_dis_lev %>% group_by(Discipline, Level) %>% summarise(Credits=sum(Credits
   labs(y="# of COURSES", x="LEVEL") 
 
 
-## by Topic Category
+#### by Topic Category
 
 
 # Unlist requirements from multiple topic categories

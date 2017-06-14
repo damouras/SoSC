@@ -18,7 +18,7 @@ rm(list=ls())
 # 27.9999	Mathematics and Statistics, Other
 # 52.1302	Business Statistics
 
-enrol = read_delim("./Data/PSIS/psis_enrolments.csv",delim = ",", col_names=TRUE)
+enrol = read_delim("./Data/psis_enrolments.csv",delim = ",", col_names=TRUE)
 enrol = enrol[apply( !apply(enrol[,1:5],2,is.na), 1, all), ]
 names(enrol)=str_replace_all(names(enrol),"PSIS_","")
 names(enrol)=str_replace_all(names(enrol),"_CODE","")
@@ -42,7 +42,7 @@ enrol= enrol %>% mutate(PROGRAM = factor(PRGCODE, levels=c("26.1102","27.0501","
 
 
 #### Graduates ####
-grad = read_delim("./Data/PSIS/RTRA_PSIS_graduates.csv",delim = ",", col_names=TRUE)
+grad = read_delim("./Data/psis_graduates.csv",delim = ",", col_names=TRUE)
 grad = grad[apply( !apply(grad[,1:5],2,is.na), 1, all), ]
 names(grad)=str_replace_all(names(grad),"PSIS_","")
 names(grad)=str_replace_all(names(grad),"_CODE","")
@@ -65,18 +65,19 @@ grad= grad %>% mutate(PROGRAM = factor(PRGCODE, levels=c("26.1102","27.0501","27
 
 
 # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770019
-# enrol_all=read_csv("./Data/04770019-eng.csv", na='..')
-# enrol_all=enrol_all %>% filter(Ref_Date=="2014/2015",GEO!="Canada",TYPE=="University",
-#                           STATUS=="Total, registration status",
-#                           PCSCE=="Postsecondary 1st cycle education or equivalent",
-#                           CIPPG=="Total, instructional programs",
-#                           IMMIGRA=="Total, student status",
-#                           SEX %in% c("Females","Males")) %>%
-#   mutate(SEX=as.factor(SEX)) %>% mutate(REGION=as.factor(GEO))
-# levels(enrol_all$REGION)=c("Prairies","BC","Prairies","Atlantic","Atlantic","Atlantic","ON","Atlantic","QC","Prairies")
-# levels(enrol_all$SEX)=c("F","M")
+enrol_all=read_csv("./Data/04770019-eng.csv", na='..')
+enrol_all=enrol_all %>% filter(Ref_Date=="2014/2015",GEO!="Canada",TYPE=="University",
+                          STATUS=="Total, registration status",
+                          PCSCE=="Postsecondary 1st cycle education or equivalent",
+                          CIPPG=="Total, instructional programs",
+                          IMMIGRA=="Total, student status",
+                          SEX %in% c("Females","Males")) %>%
+  mutate(SEX=as.factor(SEX)) %>% mutate(REGION=as.factor(GEO))
+levels(enrol_all$REGION)=c("Prairies","BC","Prairies","Atlantic","Atlantic","Atlantic","ON","Atlantic","QC","Prairies")
+levels(enrol_all$SEX)=c("F","M")
 
 # enrol_all=mutate(enrol_all, Ref_Date = as.numeric(str_extract( enrol[['Ref_Date']], "^[:digit:]+")) )
+
 # StatsCan public data from http://www5.statcan.gc.ca/cansim/a26?lang=eng&retrLang=eng&id=4770020
 # grad_all=read_csv("./Data/04770020-eng.csv", na='..')
 
