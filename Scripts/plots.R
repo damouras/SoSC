@@ -152,9 +152,8 @@ aprogs_cat %>% group_by(UNIVERSITY,Category) %>% summarize(n_Courses = sum(Credi
                       breaks=c("CS","MT","PT","SM","SP","ST","OT"),
                       labels=c("Computation","Mathematics","Probability","Stat Methodology","Stat Practice","Stat Theory","Other")) +
   #scale_x_discrete(limits=c("CS","MT","PT","SM","SP","ST","OT"))+
-  ggtitle("Number of Courses by Topic Category") + labs(y="# of COURSES", x="TOPIC CATEGORY") +
-  scale_fill_brewer(palette="Paired")
-
+  ggtitle("Number of Courses by Topic Category") + labs(y="# of COURSES", x="TOPIC CATEGORY")
+  
   
 # Unlist requirements from multiple topic categories & disciplines
 aprogs_dis_cat = aprogs %>% filter(Type!="Free") %>% 
@@ -166,10 +165,9 @@ aprogs_dis_cat = aprogs %>% filter(Type!="Free") %>%
 # Average # of Courses by Discipline and Topic Category
 aprogs_dis_cat %>% group_by(Discipline, Category) %>% summarise(Credits=sum(Credits)*2/24) %>% 
   ggplot(aes(x=Discipline, y=Credits, fill=Category)) + geom_bar(stat = "identity") +
-  ggtitle("Average # of Courses by Discipline & Topic Category") + labs(y="# of COURSES", x="DISCIPLINE") +
+  ggtitle("Average Number of Courses by Discipline & Topic Category") + labs(y="# of COURSES", x="DISCIPLINE") +
   scale_fill_discrete(name="TOPIC \n CATEGORY",
                       breaks=c("CS","MT","PT","SM","SP","ST","OT"),
-                      labels=c("Computation","Mathematics","Probability","Stat Methodology","Stat Practice","Stat Theory","Other"))+
-  scale_fill_brewer(palette="Paired")
+                      labels=c("Computation","Mathematics","Probability","Stat Methodology","Stat Practice","Stat Theory","Other"))
 
 
